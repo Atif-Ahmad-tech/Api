@@ -6,13 +6,14 @@ from .serializer import menuitemSerializer
 from django.shortcuts import get_object_or_404
 ##########################
 from rest_framework.renderers import TemplateHTMLRenderer
-
+from .models import catagory 
+from .serializer import catagorySerializer
 #############################
 # Create your views here.
 @api_view()
 def menu_items(request):
     items = Menuitem.objects.all()
-    serialized_item = menuitemSerializer(items, many=True)
+    serialized_item = menuitemSerializer(items, many=True, context={'request': request})
     return Response(serialized_item.data)
 
 @api_view()
@@ -22,6 +23,11 @@ def single_items(request, id):
     return Response(serialized_item.data)
 
 
+@api_view()
+def catagory_detail(request, pk):
+    items= get_object_or_404(catagory,pk=pk)
+    serialized_items = catagorySerializer(category)
+    return Response(serialized_item.data)
 # @api_view() 
 # @renderer_classes ([TemplateHTMLRenderer])
 # def menu_items(request):

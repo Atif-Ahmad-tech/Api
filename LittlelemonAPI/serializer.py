@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from .models import Menuitem, catagory
-
+from .import views
  
 # class menuitemSerializer(serializers.Serializer):
 #     id= serializers.IntegerField()
@@ -14,7 +14,8 @@ class catagorySerializer(serializers.ModelSerializer):
         fields = ['id', 'title', 'slug']
     
 class menuitemSerializer(serializers.ModelSerializer):
-    catagory = catagorySerializer()
+    # catagory = catagorySerializer()
+    catagory = serializers.HyperlinkedRelatedField(queryset = catagory.objects.all(),view_name='catagory_detail')
     class Meta:
         model = Menuitem
         fields = ['id', 'title', 'price', 'inventory','catagory']
