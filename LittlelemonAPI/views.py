@@ -5,6 +5,7 @@ from rest_framework.decorators import api_view, renderer_classes
 from .models import Menuitem
 from .serializer import menuitemSerializer
 from django.shortcuts import get_object_or_404
+from django.core.paginator import Paginator, EmptyPage ##### added to this branch (pagination)
 ###########   rensrers  ###############
 from .models import catagory 
 from .serializer import catagorySerializer
@@ -17,12 +18,19 @@ def menu_items(request):
         catagory_name = request.query_params.get('catagory')
         to_price = request.query_params.get('to_price')
         search = request.query_params.get('search')
+        perpage = request.query_params.get('perpage', default=2)   ##### added to this branch (pagination)
+        page = request.query_params.get('page', default=1)          ##### added to this branch (pagination)
         if catagory_name:
             items= items.filter(catagory__title=catagory_name)
         if to_price:
              items= items.filter(price__lte=to_price)
         if search:
             items= items.filter(title__startswith=search) ### startswith or contains or icontains(case INsensitive)
+        paginator = Paginator(items, per_page=perpage)
+        try:                                 ##### added to this branch (pagination)
+            items = paginator.page(page)      ##### added to this branch (pagination)
+        except EmptyPage:                        ##### added to this branch (pagination)
+            []
         serialized_item = menuitemSerializer(items, many=True, context={'request': request}) ## 
         return Response(serialized_item.data)
     if (request.method=='POST'):
