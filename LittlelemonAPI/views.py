@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from rest_framework.response import Response
+from rest_framework import status
 from rest_framework.decorators import api_view, renderer_classes
 from .models import Menuitem
 from .serializer import menuitemSerializer
@@ -28,7 +29,7 @@ def menu_items(request):
         serialized_item = menuitemSerializer(data=request.data)
         serialized_item.is_valid(raise_exception=True)
         serialized_item.save()
-        return Response(serialized_item.validated_data, status.HTTP_201_CREATED)
+        return Response(serialized_item.data, status.HTTP_201_CREATED)
     
 @api_view()
 def single_items(request, id):
